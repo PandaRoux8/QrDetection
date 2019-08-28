@@ -4,9 +4,10 @@ import cv2
 import os
 import datetime
 from PIL import Image
+# from view import root
 
 
-def check_camera(video):
+def check_camera(video, view, root):
     datas = []
     while True:
         check, frame = video.read()
@@ -21,6 +22,13 @@ def check_camera(video):
 
         if data and data not in datas:
             datas.append(data)
+            data_str = "%s%s" % (data.decode(), '\n')
+            view.log_camera.configure(state='normal')
+            view.log_camera.insert('end', data_str)
+            view.log_camera.configure(state='disabled')
+            root.update()
+            # view.update_gui()
+            # camera_label['text'] = data
             file = open("qr_data.txt", "a+")
             now = datetime.datetime.now()
             file.write("N° : %s; Date : %s \n" % (data.decode(), now))
@@ -46,8 +54,10 @@ def decode(img):
     return res
 
 
-if __name__ == '__main__':
+def start(index_camera, view, root):
+# if __name__ == '__main__':
     #  Index de la camera a utilisé -> 1 parce que 2 camera sur PC portable
-    video = cv2.VideoCapture(2)
-    check_camera(video)
+    # TODO : Automate this try 1 to 10
+    video = cv2.VideoCapture(index_camera)
+    check_camera(video, view, root)
     video.release()
