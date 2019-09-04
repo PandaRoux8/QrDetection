@@ -1,13 +1,18 @@
+"""
+QR Detection
+Name    :   Schluchter Jules
+Class   :   INF/EE 3
+Date    :   04.09.2019
+Desc    :   Get the frame from the camera and detect QR code, display them in a text box.
+"""
 from __future__ import print_function
 import pyzbar.pyzbar as pyzbar
 import cv2
-import os
 import datetime
 from PIL import Image
-# from view import root
 
 
-def check_camera(video, view, root):
+def start_camera_capture(video, view, root):
     datas = []
     while True:
         check, frame = video.read()
@@ -17,26 +22,24 @@ def check_camera(video, view, root):
 
         if data:
             now = datetime.datetime.now()
-            str_now = now.strftime("%m/%d/%Y, %H:%M:%S")
+            str_now = now.strftime("%d/%m/%Y, %H:%M:%S")
             print("%s %s" % (data, str_now))
 
         if data and data not in datas:
             datas.append(data)
-            data_str = "%s%s" % (data.decode(), '\n')
+            now = datetime.datetime.now()
+            number = "N° : %-50s" % data.decode()
+            date = "Date : %s \n" % now.strftime("%d/%m/%Y, %H:%M:%S")
+            data_str = number + date
             view.log_camera.configure(state='normal')
             view.log_camera.insert('end', data_str)
             view.log_camera.configure(state='disabled')
             root.update()
-            # view.update_gui()
-            # camera_label['text'] = data
-            file = open("qr_data.txt", "a+")
-            now = datetime.datetime.now()
-            file.write("N° : %s; Date : %s \n" % (data.decode(), now))
-            file.close()
 
         # Affiche la vue de la camera
         cv2.imshow("Capture", frame)
         if cv2.waitKey(1) == 27:
+            view.quit()
             break  # esc to quit
 
 
@@ -55,9 +58,20 @@ def decode(img):
 
 
 def start(index_camera, view, root):
-# if __name__ == '__main__':
     #  Index de la camera a utilisé -> 1 parce que 2 camera sur PC portable
-    # TODO : Automate this try 1 to 10
     video = cv2.VideoCapture(index_camera)
-    check_camera(video, view, root)
+    start_camera_capture(video, view, root)
     video.release()
+
+
+def check_available_camera():
+    available_cam = ""
+    for i in range(20):
+        cam = cv2.VideoCapture(i)
+        if cam.isOpened():
+            if i == 0:
+                available_cam += "%s" % str(i)
+            else:
+                available_cam += ", %s" % str(i)
+
+    return available_cam
