@@ -63,7 +63,7 @@ class QrDetection:
         position_down = int(self.view.winfo_screenheight() / 2 - window_height / 2)
         self.view.geometry("+{}+{}".format(position_right, position_down))
 
-        self.view.wm_attributes('-type', 'splash')
+        # self.view.wm_attributes('-type', 'splash')
         self.qr_selection_view()
         start(camera_index, self, self.view)
 
