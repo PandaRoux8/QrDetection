@@ -1,7 +1,7 @@
 """
 QR Detection
 Name    :   Schluchter Jules
-Class   :   INF/EE 3
+Mail    :   jules.schluchter@gmail.com
 Date    :   04.09.2019
 Desc    :   Get the frame from the camera and detect QR code, display them in a text box.
 """
@@ -36,7 +36,7 @@ def start_camera_capture(video, view, root):
             view.log_camera.configure(state='disabled')
             root.update()
 
-        # Affiche la vue de la camera
+        # Display camera frames
         cv2.imshow("Capture", frame)
         if cv2.waitKey(1) == 27:
             view.quit()
@@ -44,7 +44,7 @@ def start_camera_capture(video, view, root):
 
 
 def decode(img):
-    # Trouve le QR code
+    # Detect a QR code on an image
     decoded_image = pyzbar.decode(img)
 
     res = {}
@@ -58,7 +58,7 @@ def decode(img):
 
 
 def start(index_camera, view, root):
-    #  Index de la camera a utilisé -> 1 parce que 2 camera sur PC portable
+    # Index of the camera to use
     video = cv2.VideoCapture(index_camera)
     start_camera_capture(video, view, root)
     video.release()

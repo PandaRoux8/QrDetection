@@ -1,7 +1,7 @@
 """
 QR Detection
 Name    :   Schluchter Jules
-Class   :   INF/EE 3
+Mail    :   jules.schluchter@gmail.com
 Date    :   04.09.2019
 """
 from tkinter import Tk
