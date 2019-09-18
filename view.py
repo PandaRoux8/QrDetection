@@ -7,7 +7,8 @@ Desc    :   Create the view
 """
 
 from tkinter import Tk, Label, Button, Entry, Text
-from number_detection import start, check_available_camera
+from number_detection import check_available_camera
+from number_detection import NumberDetection
 
 
 class QrCamSelection:
@@ -65,7 +66,7 @@ class QrDetection:
 
         # self.view.wm_attributes('-type', 'splash')
         self.qr_selection_view()
-        start(camera_index, self, self.view)
+        NumberDetection(self, self.view, camera_index)
 
     def qr_selection_view(self):
         self.view.title("QR Detection")

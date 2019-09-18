@@ -9,3 +9,10 @@
 
 **! Important !** : To quit the program you have to press ESC
 
+
+TODO : Stocké dans un fichier les temps
+
+Afficher le meilleur temps
+Afficher le temps le plus mauvais
+Afficher le nombre de tour
+
