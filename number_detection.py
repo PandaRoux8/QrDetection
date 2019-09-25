@@ -12,7 +12,7 @@ import datetime
 from PIL import Image
 
 CHECK_TOUR_TIME = 5
-FILENAME_DATE = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+FILENAME_DATE = datetime.datetime.now().strftime("%Y-%m-%d %H %M %S")
 
 
 class NumberDetection(object):
