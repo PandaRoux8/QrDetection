@@ -3,7 +3,7 @@ QR Detection
 Name    :   Schluchter Jules
 Mail    :   jules.schluchter@gmail.com
 Date    :   04.09.2019
-Desc    :   Get the frame from the camera and detect QR code, display them in a text box.
+Desc    :   Get the frame from the camera and detect QR code, display them in a text box and in a file.
 """
 from __future__ import print_function
 import pyzbar.pyzbar as pyzbar
@@ -45,6 +45,7 @@ class NumberDetection(object):
             now = datetime.datetime.now()
             if data and data not in datas.keys():
                 start_time = now
+                # Write in the view that n° x started running
                 self.view.log_camera.configure(state='normal')
                 self.view.log_camera.insert('end', "N° %s a débuté la course.\n" % data.decode())
                 self.view.log_camera.configure(state='disabled')
@@ -56,28 +57,30 @@ class NumberDetection(object):
                     }
                 })
 
-            # Check every x seconds
+            # Check every 5 seconds if the data passed in the camera field
             now_time = datetime.datetime.now()
             if data and data in datas.keys() and int((now_time - datas[data]['last_time']).total_seconds()) >= CHECK_TOUR_TIME:
                 last_time = datas[data]['last_time']
                 total_time = datas[data]['total']
-
+                # Store the last_time, tour, and total time for the given n°
                 datas.update({data: {
                         'last_time': now_time,
                         'tour': datas[data]['tour'] + 1,
                         'total': total_time + int((now_time - last_time).total_seconds())
                     }
                 })
-
+                # Format the string to write
                 data_str = "N° %s    Tour : %s    Temps du tour : %s sec.    Temps total : %s sec.\n" % \
                            (data.decode(), datas[data]['tour'], int((now_time - last_time).total_seconds()),
                             datas[data]['total'])
                 data_str_csv = "%s,%s,%s,%s;\n" % (data.decode(), datas[data]['tour'],
                                                     int((now_time - last_time).total_seconds()), datas[data]['total'])
+                # Display in the view
                 self.view.log_camera.configure(state='normal')
                 self.view.log_camera.insert('end', data_str)
                 self.view.log_camera.configure(state='disabled')
                 self.root.update()
+                # Write in the csv file
                 with open("qr_data_%s.csv" % FILENAME_DATE, "a+") as f:
                     f.write(data_str_csv)
 
