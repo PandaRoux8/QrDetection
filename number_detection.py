@@ -45,41 +45,41 @@ class NumberDetection(object):
 
             now = datetime.datetime.now()
             if data and data not in datas.keys():
-                start_time = time.time()
+                start_time = now
                 self.view.log_camera.configure(state='normal')
                 self.view.log_camera.insert('end', "N° %s a débuté la course.\n" % data)
                 self.view.log_camera.configure(state='disabled')
                 self.root.update()
                 datas.update({data: {
                         'last_time': start_time,
-                        'time': CHECK_TOUR_TIME+1,
+                        # 'time': CHECK_TOUR_TIME+1,
                         'tour': 0,
+                        'total': 0,
                     }
                 })
-                print("1", datas)
 
             # Check every x seconds
-            now_time = time.time()
-            if data and data in datas.keys():
-                print(int(now_time - datas[data]['last_time']) , int(now_time - datas[data]['last_time']) > CHECK_TOUR_TIME)
+            now_time = datetime.datetime.now()
 
-            if data and data in datas.keys() and int(now_time - datas[data]['last_time']) > CHECK_TOUR_TIME:
+            if data and data in datas.keys() and int((now_time - datas[data]['last_time']).total_seconds()) > CHECK_TOUR_TIME:
                 last_time = datas[data]['last_time']
+                total_time = datas[data]['total']
 
                 datas.update({data: {
                         'last_time': now_time,
-                        'time': now_time - last_time,
+                        # 'time': int((now_time - datas[data]['last_time']).total_seconds()),
                         'tour': datas[data]['tour'] + 1,
+                        'total': total_time + int((now_time - last_time).total_seconds())
                     }
                 })
                 # TODO : CHeck this
-                # data_str = "N° %s Time : %s Tour : %s\n" % (data.decode(), datas[data]['time'], datas[data]['tour'])
-                # self.view.log_camera.configure(state='normal')
-                # self.view.log_camera.insert('end', data_str)
-                # self.view.log_camera.configure(state='disabled')
-                # self.root.update()
-                # with open("qr_data.txt", "a+") as f:
-                #     f.write(data_str)
+                data_str = "N° %s Time : %s Tour : %s Total : %s\n" % (data.decode(), int((now_time - last_time).total_seconds()), datas[data]['tour'], datas[data]['total'])
+                self.view.log_camera.configure(state='normal')
+                self.view.log_camera.insert('end', data_str)
+                self.view.log_camera.configure(state='disabled')
+                self.root.update()
+                with open("qr_data.txt", "a+") as f:
+                    f.write(data_str)
 
             # Display camera frames
             cv2.imshow("Capture", frame)
