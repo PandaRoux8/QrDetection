@@ -9,11 +9,10 @@ from __future__ import print_function
 import pyzbar.pyzbar as pyzbar
 import cv2
 import datetime
-from datetime import timedelta
-import time
 from PIL import Image
 
-CHECK_TOUR_TIME = 3
+CHECK_TOUR_TIME = 5
+FILENAME_DATE = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 class NumberDetection(object):
@@ -41,18 +40,17 @@ class NumberDetection(object):
             #     now_date = datetime.datetime.now()
             #     date = "Date : %s" % now_date.strftime("%d/%m/%Y, %H:%M:%S")
             #     data_str = number + date
-            #     print(data_str)
+            #     print(data_str)d
 
             now = datetime.datetime.now()
             if data and data not in datas.keys():
                 start_time = now
                 self.view.log_camera.configure(state='normal')
-                self.view.log_camera.insert('end', "N° %s a débuté la course.\n" % data)
+                self.view.log_camera.insert('end', "N° %s a débuté la course.\n" % data.decode())
                 self.view.log_camera.configure(state='disabled')
                 self.root.update()
                 datas.update({data: {
                         'last_time': start_time,
-                        # 'time': CHECK_TOUR_TIME+1,
                         'tour': 0,
                         'total': 0,
                     }
@@ -60,26 +58,28 @@ class NumberDetection(object):
 
             # Check every x seconds
             now_time = datetime.datetime.now()
-
-            if data and data in datas.keys() and int((now_time - datas[data]['last_time']).total_seconds()) > CHECK_TOUR_TIME:
+            if data and data in datas.keys() and int((now_time - datas[data]['last_time']).total_seconds()) >= CHECK_TOUR_TIME:
                 last_time = datas[data]['last_time']
                 total_time = datas[data]['total']
 
                 datas.update({data: {
                         'last_time': now_time,
-                        # 'time': int((now_time - datas[data]['last_time']).total_seconds()),
                         'tour': datas[data]['tour'] + 1,
                         'total': total_time + int((now_time - last_time).total_seconds())
                     }
                 })
-                # TODO : CHeck this
-                data_str = "N° %s Time : %s Tour : %s Total : %s\n" % (data.decode(), int((now_time - last_time).total_seconds()), datas[data]['tour'], datas[data]['total'])
+
+                data_str = "N° %s    Tour : %s    Temps du tour : %s sec.    Temps total : %s sec.\n" % \
+                           (data.decode(), datas[data]['tour'], int((now_time - last_time).total_seconds()),
+                            datas[data]['total'])
+                data_str_csv = "%s,%s,%s,%s;\n" % (data.decode(), datas[data]['tour'],
+                                                    int((now_time - last_time).total_seconds()), datas[data]['total'])
                 self.view.log_camera.configure(state='normal')
                 self.view.log_camera.insert('end', data_str)
                 self.view.log_camera.configure(state='disabled')
                 self.root.update()
-                with open("qr_data.txt", "a+") as f:
-                    f.write(data_str)
+                with open("qr_data_%s.csv" % FILENAME_DATE, "a+") as f:
+                    f.write(data_str_csv)
 
             # Display camera frames
             cv2.imshow("Capture", frame)

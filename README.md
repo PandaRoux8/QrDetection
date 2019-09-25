@@ -6,13 +6,12 @@
 - Select a camera index from the list
 - Place QR code in front of the camera
 - Read the data
+- The data are read every 5 seconds
 
 **! Important !** : To quit the program you have to press ESC
 
+CSV file format :
 
-TODO : Stocké dans un fichier les temps
-
-Afficher le meilleur temps
-Afficher le temps le plus mauvais
-Afficher le nombre de tour
-
+    < N° >,< Tour >,< Temps du tour >,< Temps total >;
+    < N° >,< Tour >,< Temps du tour >,< Temps total >;
+    ...

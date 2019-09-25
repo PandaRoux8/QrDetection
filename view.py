@@ -3,7 +3,7 @@ QR Detection
 Name    :   Schluchter Jules
 Mail    :   jules.schluchter@gmail.com
 Date    :   04.09.2019
-Desc    :   Create the view
+Desc    :   Create the views for the program
 """
 
 from tkinter import Tk, Label, Button, Entry, Text
